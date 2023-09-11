@@ -51,5 +51,7 @@
     <string>Explain why your app uses photo library</string>
     <key>NSCameraUsageDescription</key>
     <string>Explain why your app uses camera</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Access to photos is required for image caching.</string>
 </dict>
 </plist>

@@ -1,14 +1,16 @@
-import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:domus_buddies/pet/post_info.dart';
 import 'package:domus_buddies/services/feed_services.dart';
 import 'package:domus_buddies/upload_page.dart';
 import 'package:domus_buddies/User/user_info.dart';
 import 'package:provider/provider.dart';
-import 'background/AppBarGeneric.dart';
-import 'background/BackgroundGeneric.dart';
 import 'User/get_keycloack_token.dart';
-
+import 'background/appbar_generic.dart';
+import 'background/background_generic.dart';
+import 'package:image/image.dart' as img;
+import 'package:http/http.dart' as http;
+import 'dart:typed_data';
 
 class NovidadesPage extends StatelessWidget {
   const NovidadesPage({super.key,});
@@ -32,7 +34,7 @@ class NovidadesPage extends StatelessWidget {
         body: Consumer<FeedServices>(builder: (context, provider, child) {
           List<PostInfo> feeds = provider.feeds;
           if (feeds.isEmpty) {
-            provider.fetchFeed(authToken as String, 30, 0);
+            provider.fetchFeed(authToken as String, 10, 0);
             return buildFunnyAnimation(feeds);
           } else {
             return buildFeedList(context, feeds);
@@ -65,7 +67,7 @@ class NovidadesPage extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: feeds.length,
                     itemBuilder: (context, index) {
-                        return buildPostSection(context, feeds.elementAt(index));
+                      return buildPostSection(context, feeds.elementAt(index));
                     },
                   ),
                 ),
@@ -96,14 +98,37 @@ class NovidadesPage extends StatelessWidget {
     return buildMediaSection(context, post);
   }
 
-
-Widget buildMedia(BuildContext context, PostInfo post) {
-  if (post.filename != null) {
-    var url = ('https://domusbuddies.s3.eu-central-1.amazonaws.com/${post.filename!}');
-    return Image.memory(Uint8List.fromList(post.fileInBytes));
+  Future<Uint8List> resizeImage(Uint8List imageBytes, double width, double height) async {
+    final image = img.decodeImage(imageBytes)!;
+    final resizedImage = img.copyResize(image, width: width.toInt(), height: height.toInt());
+    final resizedBytes = img.encodePng(resizedImage);
+    return Uint8List.fromList(resizedBytes);
   }
-  return const PlaceholderImage();
-}
+
+  Widget buildMedia(BuildContext context, PostInfo post) {
+    if (post.filename != null) {
+      final imageUrl = 'https://domusbuddies.s3.eu-central-1.amazonaws.com/${post.filename!}';
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
+        placeholder: (context, url) => const PlaceholderImage(),
+        errorWidget: (context, url, error) => const PlaceholderImage(), // Handle error gracefully
+        fit: BoxFit.cover, // You can adjust this as needed
+      );
+    }
+    return const PlaceholderImage();
+  }
+
+  Future<Uint8List> fetchAndResizeImage(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      final originalBytes = response.bodyBytes;
+      // Resize the image to your desired dimensions (e.g., 200x200)
+      final resizedBytes = await resizeImage(originalBytes, 200, 200);
+      return resizedBytes;
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
 
   Widget buildMediaSection(BuildContext context, PostInfo post) {
     return Card(

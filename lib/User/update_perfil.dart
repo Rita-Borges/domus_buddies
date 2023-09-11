@@ -4,8 +4,8 @@ import 'package:domus_buddies/User/update_user_info_request.dart';
 import 'package:domus_buddies/User/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../background/AppBarGeneric.dart';
-import '../background/BackgroundGeneric.dart';
+import '../background/appbar_generic.dart';
+import '../background/background_generic.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -437,7 +437,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 // Navigate to the NovidadesPage
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const NovidadesPage()),
+                  MaterialPageRoute(builder: (context) =>  NovidadesPage()),
                 );
               },
               child: const Text('OK'),

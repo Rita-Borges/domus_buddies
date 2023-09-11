@@ -12,7 +12,7 @@ import 'image_services.dart';
 class FeedServices extends ChangeNotifier {
   List<PostInfo> feeds = List.empty();
 
-  Future<void> fetchFeed(String authToken, int quantity, int skip) async {
+  Future<bool> fetchFeed(String authToken, int quantity, int skip) async {
     final Uri uri = Uri.parse('http://domusbuddies.eu:8083/api/v1/feed/list?quantity=$quantity&skip=$skip');
     final Map<String, String> headers = {
       'Authorization': 'Bearer $authToken',
@@ -21,17 +21,20 @@ class FeedServices extends ChangeNotifier {
       final response = await http.get(uri, headers: headers);
       if (response.statusCode == 200) {
         feeds = parseFeed(response.body);
-        for(PostInfo postInfo in feeds){
-          postInfo.fileInBytes =  await ImageServices().fetchImage(authToken, postInfo.filename) ?? List.empty();
+        for (PostInfo postInfo in feeds) {
+          postInfo.fileInBytes = await ImageServices().fetchImage(authToken, postInfo.filename) ?? List.empty();
           print(postInfo.fileInBytes);
         }
         notifyListeners();
+        return true; // Return true to indicate success.
       } else {
         print('Error fetching feed: ${response.statusCode}');
         print('Error fetching feed: ${response.reasonPhrase}');
+        return false; // Return false to indicate failure.
       }
     } catch (error) {
       print('Error fetching feed: $error');
+      return false; // Return false to indicate failure.
     }
   }
 
@@ -40,41 +43,7 @@ class FeedServices extends ChangeNotifier {
     return parsed.map<PostInfo>((json) => PostInfo.fromJson(json)).toList();
   }
 
-/*  Future<void> publishPost(String authToken, PostInfo postInfo) async {
-    final Uri uri = Uri.parse('http://domusbuddies.eu:8083/api/v1/feed/publish/');
-    print("teste");
-
-    print( postInfo.message);
-
-    print( postInfo.fileInBytes);
-    try {
-      final formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(postInfo.publishDate);
-      print("ola");
-      final response = await http.post(uri,
-        headers: {
-          'Authorization': 'Bearer $authToken',
-        },
-        body: jsonEncode({
-        'message': postInfo.message,
-        'publishDate': formattedDate,
-        'username': postInfo.username,
-        'file': postInfo.fileInBytes,
-        }),
-      );
-      print(response.statusCode);
-
-      if (response.statusCode == 200) {
-        print('Succeso fetching feed: ${response.statusCode}');
-      } else {
-        print('Error fetching feed: ${response.statusCode}');
-        print('Error fetching feed: ${response.reasonPhrase}');
-      }
-    } catch (error) {
-      print('Error fetching feed: $error');
-    }
-  }*/
-
-  Future<void> publishPost(String authToken, PostInfo postInfo, File file) async {
+  Future<bool> publishPost(String authToken, PostInfo postInfo, File file) async {
     final Uri uri = Uri.parse('http://domusbuddies.eu:8083/api/v1/feed/publish');
     final Map<String, String> headers = {
       'Authorization': 'Bearer $authToken',
@@ -109,13 +78,15 @@ class FeedServices extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         print('Success fetching feed: ${response.statusCode}');
+        return true; // Return true to indicate success.
       } else {
         print('Error fetching feed: ${response.statusCode}');
         print('Error fetching feed: ${response.reasonPhrase}');
+        return false; // Return false to indicate failure.
       }
     } catch (error) {
       print('Error fetching feed: $error');
+      return false; // Return false to indicate failure.
     }
   }
-
 }

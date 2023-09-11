@@ -11,7 +11,7 @@ class KeycloakService {
   final String clientId = 'domusbuddies-app';
   final String clientSecret = 'a8XIyFyT9EpUBqegN2EncuZkgJXTEJfP';
 
-  Future<void> authenticate(BuildContext context, String username, String password) async {
+  Future<bool> authenticate(BuildContext context, String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/realms/$realm/protocol/openid-connect/token'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -33,12 +33,13 @@ class KeycloakService {
 
       // Save the logged-in username to UserSession
       UserSession.setLoggedInUsername(username);
+      return true; // Authentication was successful
     } else {
-      throw Exception('Authentication failed');
+      return false; // Authentication failed
     }
   }
 
-  Future<void> updateKeycloakToken(BuildContext context, String refreshToken) async {
+  Future<bool> updateKeycloakToken(BuildContext context, String refreshToken) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/realms/$realm/protocol/openid-connect/token'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -56,8 +57,9 @@ class KeycloakService {
 
       // Update the access token using the provider
       Provider.of<FetchUserData>(context, listen: false).setAccessToken(newAccessToken);
+      return true; // Token refresh was successful
     } else {
-      throw Exception('Token refresh failed');
+      return false; // Token refresh failed
     }
   }
 }

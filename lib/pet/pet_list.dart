@@ -1,13 +1,12 @@
-import 'package:domus_buddies/User/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../User/get_keycloack_token.dart';
+import '../User/user_info.dart';
 import 'animal_info.dart';
 import 'get_pet_list_request.dart';
-import '../User/AddPetToUser.dart';
-import '../background/AppBarGeneric.dart';
-import '../background/BackgroundGeneric.dart';
+import '../User/add_pet_to_user.dart';
+import '../background/appbar_generic.dart';
+import '../background/background_generic.dart';
 import 'registo_veterinario.dart';
 
 class MyPetsList extends StatelessWidget {
@@ -22,14 +21,14 @@ class MyPetsList extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => PetDataProvider(),
       child: Scaffold(
-        appBar: CustomAppBar(),
-        body: buildBody(username, authToken),
+        appBar: const CustomAppBar(),
+        body: buildBody(context, username, authToken),
         floatingActionButton: buildFloatingActionButton(context),
       ),
     );
   }
 
-  Widget buildBody(String? username, String? authToken) {
+  Widget buildBody(BuildContext context, String? username, String? authToken) {
     return GradientBackground(
       child: Container(
         padding: const EdgeInsets.all(5),
@@ -41,13 +40,11 @@ class MyPetsList extends StatelessWidget {
               builder: (context, provider, child) {
                 List<AnimalInfo> petNames = provider.petNames;
 
-                // Check if petNames is empty or null
                 if (petNames.isEmpty) {
                   // Fetch pet names on initial build
                   provider.fetchPetNames(authToken as String, username!);
-                  return buildLoadingIndicator(); // Show loading indicator
+                  return buildLoadingIndicator();
                 } else {
-                  // Pet names are available, build the pet list
                   return buildPetList(petNames, context);
                 }
               },
@@ -77,14 +74,27 @@ class MyPetsList extends StatelessWidget {
   }
 
   Widget buildPetList(List<AnimalInfo> petNames, BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: petNames.length,
-        itemBuilder: (context, index) {
-          return buildPetCard(petNames.elementAt(index), context);
-        },
-      ),
-    );
+    if (petNames.isEmpty) {
+      return const Center(
+        child: Text(
+          'You have no pet.',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      );
+    } else {
+      return Expanded(
+        child: ListView.builder(
+          itemCount: petNames.length,
+          itemBuilder: (context, index) {
+            return buildPetCard(petNames.elementAt(index), context);
+          },
+        ),
+      );
+    }
   }
 
   Widget buildPetCard(AnimalInfo animalInfo, BuildContext context) {

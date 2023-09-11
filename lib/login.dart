@@ -1,8 +1,7 @@
 import 'package:domus_buddies/services/login_keycloack.dart';
 import 'package:flutter/material.dart';
-import 'background/BackgroundGeneric.dart';
+import 'background/background_generic.dart';
 import 'User/recovery_page.dart';
-
 import 'package:domus_buddies/feed_page.dart';
 
 class LoginPagev0 extends StatefulWidget {
@@ -16,14 +15,16 @@ class _LoginPagev0State extends State<LoginPagev0> {
   bool _isHovering = false;
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _loginFailed = false; // Track login failure
 
   void _handleLogin() async {
     final String username = _usernameController.text.toLowerCase();
     final String password = _passwordController.text;
-    final token = await KeycloakService().authenticate(context, username, password);
-    bool isAuthenticated = true;
+
+    // Assume your authentication method returns true for success and false for failure
+    bool isAuthenticated = await KeycloakService().authenticate(context, username, password);
+
     if (isAuthenticated) {
+      _showSnackbar(context, 'Login successful', Colors.green);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -31,18 +32,23 @@ class _LoginPagev0State extends State<LoginPagev0> {
         ),
       );
     } else {
-      setState(() {
-        _loginFailed = true;
-
-      });
+      _showSnackbar(context, 'Login failed. Please check your credentials.', Colors.red);
     }
   }
 
+  void _showSnackbar(BuildContext context, String message, Color backgroundColor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(loginFailed: _loginFailed),
+      appBar: CustomAppBar(),
       body: CustomBody(
         isHovering: _isHovering,
         usernameController: _usernameController,
@@ -59,9 +65,7 @@ class _LoginPagev0State extends State<LoginPagev0> {
 }
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool loginFailed;
-
-  const CustomAppBar({Key? key, required this.loginFailed}) : super(key: key);
+  const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -69,20 +73,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: loginFailed ? Colors.pink : Colors.lightBlue.shade200,
+      backgroundColor: Colors.lightBlue.shade200,
       elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.pink),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      title: loginFailed
-          ? const Text(
-        'Login Failed',
-        style: TextStyle(color: Colors.white),
-      )
-          : null,
+      title: const Text('Login'),
     );
   }
 }

@@ -9,15 +9,17 @@ import '../User/as_minhas_publicacoes.dart';
 import '../pet/pet_list.dart';
 
 
-class CustomAppBar1 extends StatefulWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+  const CustomAppBar({super.key});
+
   @override
-  CustomAppBar1State createState() => CustomAppBar1State();
+  CustomAppBarState createState() => CustomAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class CustomAppBar1State extends State<CustomAppBar1> {
+class CustomAppBarState extends State<CustomAppBar> {
   bool _hasLocationPermission = false;
   List<PopupMenuEntry<int>> _menuOptions(BuildContext context) {
     return [
@@ -111,21 +113,15 @@ class CustomAppBar1State extends State<CustomAppBar1> {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.pink),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        IconButton(
           icon: const Icon(Icons.pets_sharp, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AsMinhasPublicacoes()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AsMinhasPublicacoes()));
           },
         ),
         IconButton(
           icon: const Icon(Icons.home_outlined, color: Colors.pink),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NovidadesPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  const NovidadesPage()));
           },
         ),
         IconButton(
@@ -141,7 +137,7 @@ class CustomAppBar1State extends State<CustomAppBar1> {
             if (selectedValue != null) {
               switch (selectedValue) {
                 case 0:
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchServices()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SearchServices()));
                   break;
                 case 1:
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => AdotePage()));
@@ -185,11 +181,11 @@ class CustomAppBar1State extends State<CustomAppBar1> {
             if (selectedValue != null) {
               switch (selectedValue) {
                 case 0:
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfilePage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UpdateProfilePage()));
                   break;
 
                 case 2:
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyPetsList()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyPetsList()));
                   break;
 
                 default:

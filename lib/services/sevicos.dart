@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../background/AppBarGeneric.dart';
-import '../background/BackgroundGeneric.dart';
+import '../background/appbar_generic.dart';
+import '../background/background_generic.dart';
 
 class SearchServices extends StatefulWidget {
   const SearchServices({super.key});

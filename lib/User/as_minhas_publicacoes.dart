@@ -1,12 +1,13 @@
-import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:domus_buddies/User/as_minhas_publicacoes_service.dart';
 import 'package:flutter/material.dart';
 import 'package:domus_buddies/pet/post_info.dart';
 import 'package:domus_buddies/upload_page.dart';
 import 'package:domus_buddies/User/user_info.dart';
 import 'package:provider/provider.dart';
-import '../background/AppBarGeneric.dart';
-import '../background/BackgroundGeneric.dart';
+import '../background/appbar_generic.dart';
+import '../background/background_generic.dart';
 import 'get_keycloack_token.dart';
 
 
@@ -28,7 +29,7 @@ class AsMinhasPublicacoes extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => AsMinhasPubliccoesService(),
       child: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: Consumer<AsMinhasPubliccoesService>(builder: (context, provider, child) {
           List<PostInfo> feeds = provider.feeds;
           if (feeds.isEmpty) {
@@ -53,7 +54,7 @@ class AsMinhasPublicacoes extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  ' Novidades',
+                  ' As minhas publicações',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -100,8 +101,13 @@ class AsMinhasPublicacoes extends StatelessWidget {
 
   Widget buildMedia(BuildContext context, PostInfo post) {
     if (post.filename != null) {
-      var url = ('https://domusbuddies.s3.eu-central-1.amazonaws.com/${post.filename!}');
-      return Image.memory(Uint8List.fromList(post.fileInBytes));
+      var imageUrl = 'https://domusbuddies.s3.eu-central-1.amazonaws.com/${post.filename!}';
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.cover, // Adjust the fit based on your requirements
+        placeholder: (context, url) => const PlaceholderImage(),
+        errorWidget: (context, url, error) => const PlaceholderImage(), // Display this if there's an error loading the image
+      );
     }
     return const PlaceholderImage();
   }

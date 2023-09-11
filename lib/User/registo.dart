@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import '../background/BackgroundGeneric.dart';
+import '../background/background_generic.dart';
 import '../login.dart';
 import '../services/register_keycloack.dart';
 import 'dart:io';
@@ -19,14 +19,12 @@ class _RegisterPage1State extends State<RegisterPage1> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-  TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   File? _selectedImage;
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image =
-    await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
@@ -46,7 +44,15 @@ class _RegisterPage1State extends State<RegisterPage1> {
     ].any((controller) => controller.text.isEmpty);
   }
 
-  // Define the keycloak variable here
+  bool _isValidEmail(String email) {
+    final RegExp emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegExp.hasMatch(email);
+  }
+
+  bool _isPasswordValid(String password) {
+    return password.length >= 4;
+  }
+
   final KeycloakServiceRegister keycloak = KeycloakServiceRegister(
     baseUrl: 'https://lemur-6.cloud-iam.com',
     realm: 'domusbuddies',
@@ -168,13 +174,15 @@ class _RegisterPage1State extends State<RegisterPage1> {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, required String labelText}) {
+  Widget _buildTextField(
+      {required TextEditingController controller, required String labelText}) {
     return TextField(
       controller: controller,
       style: const TextStyle(color: Colors.white),
       onChanged: (text) {
         controller.text = text.toLowerCase();
-        controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+        controller.selection =
+            TextSelection.fromPosition(TextPosition(offset: controller.text.length));
       },
       decoration: InputDecoration(
         labelText: labelText,
@@ -189,14 +197,11 @@ class _RegisterPage1State extends State<RegisterPage1> {
     );
   }
 
-  Widget _buildPasswordField({required TextEditingController controller, required String labelText}) {
+  Widget _buildPasswordField(
+      {required TextEditingController controller, required String labelText}) {
     return TextField(
       controller: controller,
       style: const TextStyle(color: Colors.white),
-      onChanged: (text) {
-        controller.text = text.toLowerCase();
-        controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
-      },
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.white),
@@ -220,6 +225,17 @@ class _RegisterPage1State extends State<RegisterPage1> {
             _showErrorDialog(context, 'Por favor, preencha todos os campos.');
             return;
           }
+
+          if (!_isValidEmail(_emailController.text)) {
+            _showErrorDialog(context, 'Por favor, insira um endereço de email válido.');
+            return;
+          }
+
+          if (!_isPasswordValid(_passwordController.text)) {
+            _showErrorDialog(context, 'A senha deve ter pelo menos 4 caracteres.');
+            return;
+          }
+
           _showLocationPermissionDialog(context);
 
           final success = await keycloak.registerUser(
@@ -234,16 +250,16 @@ class _RegisterPage1State extends State<RegisterPage1> {
             print('User registered successfully!');
             // Show a success message and navigate to the login page
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('User registered successfully!'),
                 backgroundColor: Colors.pink,
               ),
             );
 
             // Delay navigation to give time for the user to see the success message
-            Future.delayed(Duration(seconds: 2), () {
+            Future.delayed(const Duration(seconds: 2), () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => LoginPagev0(), // Replace with your login page widget
+                builder: (context) => const LoginPagev0(), // Replace with your login page widget
               ));
             });
           } else {
@@ -264,7 +280,6 @@ class _RegisterPage1State extends State<RegisterPage1> {
       ),
     );
   }
-
 
   void _showLocationPermissionDialog(BuildContext context) {
     showCupertinoDialog(
