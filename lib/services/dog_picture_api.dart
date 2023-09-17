@@ -21,7 +21,7 @@ class DogPictureApi {
         throw Exception('Failed to fetch dog images');
       }
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 }

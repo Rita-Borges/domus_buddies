@@ -247,7 +247,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
           );
 
           if (success) {
-            print('User registered successfully!');
+            //print('User registered successfully!');
             // Show a success message and navigate to the login page
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

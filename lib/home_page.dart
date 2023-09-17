@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   void navigateToRegisterPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RegisterPage1()),
+      MaterialPageRoute(builder: (context) => const RegisterPage1()),
     );
   }
 

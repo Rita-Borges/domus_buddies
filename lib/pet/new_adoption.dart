@@ -3,7 +3,7 @@ import '../background/appbar_generic.dart';
 import '../background/background_generic.dart';
 
 class AdotePage extends StatelessWidget {
-  AdotePage({Key? key});
+  AdotePage({super.key, });
 
   // List of comments to display
   List<String> comments = [
@@ -17,7 +17,7 @@ class AdotePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: GradientBackground(
           child: Container(
             padding: const EdgeInsets.all(5),

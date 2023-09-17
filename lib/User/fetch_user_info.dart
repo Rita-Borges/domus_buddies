@@ -23,15 +23,17 @@ class UserDataProvider with ChangeNotifier {
 }
 
 class FetchUserData extends StatelessWidget {
+  const FetchUserData({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
       future: fetchUserData(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return YourWidget();
+          return const YourWidget();
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );
@@ -51,14 +53,16 @@ Future<void> fetchUserData(BuildContext context) async {
       userDataProvider.updateUserData(userData);
 
     } catch (error) {
-      print('Error fetching user data: $error');
+      //print('Error fetching user data: $error');
     }
   } else {
-    print('Failed to get access token or logged-in username.');
+    //print('Failed to get access token or logged-in username.');
   }
 }
 
 class YourWidget extends StatelessWidget {
+  const YourWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<UserDataProvider>(context);

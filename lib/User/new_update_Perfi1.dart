@@ -20,7 +20,7 @@ class _UppdatePage1State extends State<UppdatePage1> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: GradientBackground(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -171,19 +171,19 @@ class _UppdatePage1State extends State<UppdatePage1> {
                       alignment: Alignment.bottomCenter,
                       child: ElevatedButton(
                         onPressed: () {
-                          String firstName = _firstNameController.text;
-                          String lastName = _lastNameController.text;
-                          String email = _emailController.text;
-                          String moradaRua = _moradaRuaController.text;
-                          String moradaCodigoPostal = _moradaCodigoPostalController.text;
-                          String moradaCidade = _moradaCidadeController.text;
+                          //String firstName = _firstNameController.text;
+                          //String lastName = _lastNameController.text;
+                          //String email = _emailController.text;
+                          //String moradaRua = _moradaRuaController.text;
+                          //String moradaCodigoPostal = _moradaCodigoPostalController.text;
+                          //String moradaCidade = _moradaCidadeController.text;
 
-                          print('First Name: $firstName');
-                          print('First Name: $lastName');
-                          print('Email: $email');
-                          print('Confirm Street name: $moradaRua');
-                          print('Confirm codigo postal: $moradaCodigoPostal');
-                          print('Confirm city: $moradaCidade');
+                          //print('First Name: $firstName');
+                          //print('First Name: $lastName');
+                          //print('Email: $email');
+                          //print('Confirm Street name: $moradaRua');
+                          //print('Confirm codigo postal: $moradaCodigoPostal');
+                          //print('Confirm city: $moradaCidade');
 
                         },
                         style: ElevatedButton.styleFrom(

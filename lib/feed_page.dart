@@ -30,7 +30,7 @@ class NovidadesPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => FeedServices(),
       child: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: Consumer<FeedServices>(builder: (context, provider, child) {
           List<PostInfo> feeds = provider.feeds;
           if (feeds.isEmpty) {

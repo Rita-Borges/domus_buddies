@@ -9,7 +9,40 @@ import 'package:provider/provider.dart';
 import '../background/appbar_generic.dart';
 import '../background/background_generic.dart';
 import 'get_keycloack_token.dart';
-import 'update_perfil.dart';
+
+class PetDataFetcher {
+  static Future<List<String>> fetchSpecies() async {
+    try {
+      final response = await http.get(Uri.parse('http://domusbuddies.eu:8082/api/v1/specie/listAll'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<String>.from(data);
+      } else {
+        //print('Failed to fetch species and breeds');
+        return [];
+      }
+    } catch (error) {
+      //print('Error fetching species and breeds: $error');
+      return [];
+    }
+  }
+
+  static Future<List<String>> fetchBreeds(String selectedEspecie) async {
+    try {
+      final response = await http.get(Uri.parse('http://domusbuddies.eu:8082/api/v1/specie/$selectedEspecie/breeds'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<String>.from(data);
+      } else {
+        //print('Failed to fetch breeds');
+        return [];
+      }
+    } catch (error) {
+      //print('Error fetching breeds: $error');
+      return [];
+    }
+  }
+}
 
 class AddPetToUser extends StatefulWidget {
   const AddPetToUser({Key? key}) : super(key: key);
@@ -20,7 +53,7 @@ class AddPetToUser extends StatefulWidget {
 
 class _AddPetToUserState extends State<AddPetToUser> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _shipController = TextEditingController();
+  final TextEditingController _chipController = TextEditingController();
   DateTime? _selectedDate;
   File? _selectedImage;
   String? _selectedEspecie;
@@ -30,51 +63,26 @@ class _AddPetToUserState extends State<AddPetToUser> {
   List<String> _breeds = [];
   final List<String> _genders = ['Feminino', 'Masculino'];
 
-
   @override
   void initState() {
     super.initState();
-    // Fetch species and breeds when the widget initializes
+    // Fetch species when the widget initializes
     _fetchEspecie();
   }
 
   Future<void> _fetchEspecie() async {
-    try {
-      final response = await http.get(Uri.parse('http://domusbuddies.eu:8082/api/v1/specie/listAll'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          _species = List<String>.from(data);
-        });
-      } else {
-        print('Failed to fetch species and breeds');
-      }
-    } catch (error) {
-      print('Error fetching species and breeds: $error');
-    }
+    final species = await PetDataFetcher.fetchSpecies();
+    setState(() {
+      _species = species;
+    });
   }
 
   Future<void> _fetchBreed() async {
-    try {
-      print(_selectedEspecie);
-      final response = await http.get(Uri.parse('http://domusbuddies.eu:8082/api/v1/specie/$_selectedEspecie/breeds'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          _breeds = List<String>.from(data);
-        });
-      } else {
-        print('Failed to fetch species and breeds');
-      }
-    } catch (error) {
-      print('Error fetching species and breeds: $error');
-    }
+    final breeds = await PetDataFetcher.fetchBreeds(_selectedEspecie ?? "");
+    setState(() {
+      _breeds = breeds;
+    });
   }
-
-
-
-
-  @override
 
   Widget _buildEspecieDropdown() => _buildDropdown(_species, _selectedEspecie, (value) {
     setState(() {
@@ -96,38 +104,45 @@ class _AddPetToUserState extends State<AddPetToUser> {
       _selectedGender = value;
     });
   }, 'Sexo');
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: const CustomAppBar(),
       body: GradientBackground(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _buildTitle(),
-              const SizedBox(height: 8),
-              _buildPetImageSelector(),
-              const SizedBox(height: 8),
-              _buildNameField(),
-              const SizedBox(height: 8),
-              _buildShipNumberField(),
-              const SizedBox(height: 8),
-              _buildEspecieDropdown(),
-              const SizedBox(height: 8),
-              _buildRacaDropdown(),
-              const SizedBox(height: 8),
-              _buildGenderSelector(), // Add gender selector
-              const SizedBox(height: 8),
-              _buildDateOfBirthSelector(),
-              const SizedBox(height: 16),
-              _buildAddPetButton(),
-            ],
-          ),
-    ),
+        child: Column(
+          children: [
+            _buildTitle(),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: [
+                  _buildPetImageSelector(),
+                  const SizedBox(height: 16),
+                  _buildNameField(),
+                  const SizedBox(height: 8),
+                  _buildChipNumberField(),
+                  const SizedBox(height: 8),
+                  _buildEspecieDropdown(),
+                  const SizedBox(height: 8),
+                  _buildRacaDropdown(),
+                  const SizedBox(height: 8),
+                  _buildGenderSelector(), // Add gender selector
+                  const SizedBox(height: 8),
+                  _buildDateOfBirthSelector(),
+                  const SizedBox(height: 16),
+                  _buildAddPetButton(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+
 
   Widget _buildTitle() {
     return const Text(
@@ -145,44 +160,54 @@ class _AddPetToUserState extends State<AddPetToUser> {
   }
 
   Widget _buildPetImageSelector() {
-    return Stack(
+    return Column(
       children: [
         GestureDetector(
           onTap: _pickImage,
-          child: ClipOval(
-            child: Opacity(
-              opacity: 1.0,
-              child: _selectedImage != null
-                  ? Image.file(_selectedImage!)
-                  : Image.asset(
-                'assets/images/logo2.png',
-                width: 150.0,
-                height: 150.0,
-                fit: BoxFit.cover,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ClipOval(
+                child: Opacity(
+                  opacity: 1.0,
+                  child: _selectedImage != null
+                      ? Image.file(
+                    _selectedImage!,
+                    fit: BoxFit.cover,
+                  )
+                      : Image.asset(
+                    'assets/images/logo2.png',
+                    width: 150.0,
+                    height: 150.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-            ),
-        ),
-        Positioned(
-          right: 8,
-          bottom: 8,
-          child: Tooltip(
-            message: "Change Picture",
-            child: CircleAvatar(
-              backgroundColor: Colors.white54,
-              child: IconButton(
-                icon: const Icon(Icons.edit, color: Colors.pink),
-                onPressed: _pickImage,
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: Tooltip(
+                  message: "Change Picture",
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white54,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.pink),
+                      onPressed: _pickImage,
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
+        const SizedBox(height: 8.0),
       ],
     );
   }
 
+
   Widget _buildNameField() => _buildTextField(_nameController, 'Nome');
-  Widget _buildShipNumberField() => _buildTextField(_shipController, 'Número do ship');
+  Widget _buildChipNumberField() => _buildTextField(_chipController, 'Número do chip');
 
   Widget _buildTextField(TextEditingController controller, String label) {
     return TextField(
@@ -292,8 +317,8 @@ class _AddPetToUserState extends State<AddPetToUser> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
@@ -329,18 +354,18 @@ class _AddPetToUserState extends State<AddPetToUser> {
   }
 
   void _onAddPetPressed() async {
-    print(_nameController.text);
-    print(_shipController.text);
-    print(_selectedGender);
-    print(_selectedEspecie);
-    print(_selectedRaca);
-    print(_selectedDate);
+    //print(_nameController.text);
+    //print(_shipController.text);
+    //print(_selectedGender);
+    //print(_selectedEspecie);
+    //print(_selectedRaca);
+    //print(_selectedDate);
     if (_validateInputs()) {
       var gender = _selectedGender?.compareTo("Femenino") == 0 ? 'FEMALE' : 'MALE';
       var datebirth = _selectedDate?.toIso8601String();
       final petData = {
         'name': _nameController.text,
-        'microchipNumber': _shipController.text,
+        'microchipNumber': _chipController.text,
         'specie': _selectedEspecie,
         'breed': _selectedRaca,
         'gender': gender, // Include the selected gender
@@ -367,35 +392,34 @@ class _AddPetToUserState extends State<AddPetToUser> {
 
 
       if (response.statusCode == 201) {
-        final snackBar = SnackBar(content: Text('Pet added successfully!'));
+        const snackBar = SnackBar(content: Text('Pet added successfully!'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
         // Delay navigation for a few seconds to allow the user to see the message
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
 
         // Navigate to a different page after showing the success message
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MyPetsList()), // Replace SuccessPage with the actual page you want to navigate to
+          MaterialPageRoute(builder: (context) => const MyPetsList()), // Replace SuccessPage with the actual page you want to navigate to
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add pet. Please try again.')),
+          const SnackBar(content: Text('Failed to add pet. Please try again.')),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all fields correctly.')),
+        const SnackBar(content: Text('Please fill all fields correctly.')),
       );
     }
   }
 
   bool _validateInputs() {
     return _nameController.text.isNotEmpty &&
-        _shipController.text.isNotEmpty &&
+        _chipController.text.isNotEmpty &&
         _selectedEspecie != null &&
         _selectedRaca != null &&
         _selectedDate != null ;
-        //_selectedImage != null;
   }
 
 }

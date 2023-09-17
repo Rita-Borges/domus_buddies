@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PasswordRecoveryPage2 extends StatelessWidget {
-  PasswordRecoveryPage2({Key? key});
+  const PasswordRecoveryPage2({super.key, });
 
   @override
   Widget build(BuildContext context) {

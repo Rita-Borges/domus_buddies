@@ -17,9 +17,9 @@ class PetDataProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         petNames = parsePets(response.body);
         notifyListeners();
-        petNames.forEach((element) {
+        for (var element in petNames) {
           print(element.name);
-        });
+        }
         return "Success"; // Indicate success
       } else {
         print('Error fetching pet names: ${response.statusCode}');

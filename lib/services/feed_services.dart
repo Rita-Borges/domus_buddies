@@ -23,17 +23,17 @@ class FeedServices extends ChangeNotifier {
         feeds = parseFeed(response.body);
         for (PostInfo postInfo in feeds) {
           postInfo.fileInBytes = await ImageServices().fetchImage(authToken, postInfo.filename) ?? List.empty();
-          print(postInfo.fileInBytes);
+          //print(postInfo.fileInBytes);
         }
         notifyListeners();
         return true; // Return true to indicate success.
       } else {
-        print('Error fetching feed: ${response.statusCode}');
-        print('Error fetching feed: ${response.reasonPhrase}');
+        //print('Error fetching feed: ${response.statusCode}');
+        //print('Error fetching feed: ${response.reasonPhrase}');
         return false; // Return false to indicate failure.
       }
     } catch (error) {
-      print('Error fetching feed: $error');
+      //print('Error fetching feed: $error');
       return false; // Return false to indicate failure.
     }
   }
@@ -51,11 +51,11 @@ class FeedServices extends ChangeNotifier {
     };
 
     final formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(postInfo.publishDate);
-    print("Request URL: $uri");
-    print("Request Headers: $headers");
-    print("Request Message: ${postInfo.message}");
-    print("Request Publish Date: ${postInfo.publishDate}");
-    print("Request Username: ${postInfo.username}");
+    //print("Request URL: $uri");
+    //print("Request Headers: $headers");
+    //print("Request Message: ${postInfo.message}");
+    //print("Request Publish Date: ${postInfo.publishDate}");
+    //print("Request Username: ${postInfo.username}");
 
     try {
       final request = http.MultipartRequest('POST', uri);
@@ -73,19 +73,19 @@ class FeedServices extends ChangeNotifier {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      print("Response Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      //print("Response Status Code: ${response.statusCode}");
+      //print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        print('Success fetching feed: ${response.statusCode}');
+        //print('Success fetching feed: ${response.statusCode}');
         return true; // Return true to indicate success.
       } else {
-        print('Error fetching feed: ${response.statusCode}');
-        print('Error fetching feed: ${response.reasonPhrase}');
+        //print('Error fetching feed: ${response.statusCode}');
+        //print('Error fetching feed: ${response.reasonPhrase}');
         return false; // Return false to indicate failure.
       }
     } catch (error) {
-      print('Error fetching feed: $error');
+      //print('Error fetching feed: $error');
       return false; // Return false to indicate failure.
     }
   }

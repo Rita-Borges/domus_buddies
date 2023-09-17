@@ -9,13 +9,12 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:domus_buddies/background/appbar_generic.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'User/as_minhas_publicacoes.dart';
 import 'User/get_keycloack_token.dart';
 import 'background/background_generic.dart';
 class UploadPage extends StatefulWidget {
-  UploadPage({Key? key}) : super(key: key);
+  const UploadPage({Key? key}) : super(key: key);
 
   @override
   _UploadPageState createState() => _UploadPageState();
@@ -23,7 +22,7 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   XFile? _selectedFile;
-  TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -69,7 +68,7 @@ class _UploadPageState extends State<UploadPage> {
     String? loggedInUsername = UserSession.getLoggedInUsername();
 
     return Scaffold(
-      appBar: CustomAppBar(), // Replace with your app bar widget.
+      appBar: const CustomAppBar(), // Replace with your app bar widget.
       body: GradientBackground(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -148,7 +147,7 @@ class _UploadPageState extends State<UploadPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  AsMinhasPublicacoes(),
+                                  const AsMinhasPublicacoes(),
                             ),
                           );
                         } else {

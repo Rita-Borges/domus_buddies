@@ -34,7 +34,7 @@ class KeycloakServiceRegister {
       final data = json.decode(response.body);
       return data['access_token'];
     } else {
-      print('Error fetching access token: ${response.body}');
+      //print('Error fetching access token: ${response.body}');
       return null;
     }
   }

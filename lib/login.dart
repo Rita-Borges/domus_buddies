@@ -48,7 +48,7 @@ class _LoginPagev0State extends State<LoginPagev0> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: const CustomAppBar(),
       body: CustomBody(
         isHovering: _isHovering,
         usernameController: _usernameController,
@@ -272,7 +272,7 @@ class PasswordRecoveryPage extends StatelessWidget {
     return MaterialApp(
       title: 'Password Recovery Page',
       theme: ThemeData(),
-      home: PasswordRecoveryPage2(),
+      home: const PasswordRecoveryPage2(),
     );
   }
 }

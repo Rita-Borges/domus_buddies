@@ -1,9 +1,4 @@
-import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:ui';
 
-import 'package:domus_buddies/services/image_services.dart';
-import 'package:flutter/foundation.dart';
 
 class PostInfo{
   String? appId;

@@ -56,7 +56,7 @@ class _SearchServicesState extends State<SearchServices> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: Stack(
           children: [
             GradientBackground(

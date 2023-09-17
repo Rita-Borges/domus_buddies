@@ -1,8 +1,4 @@
 import 'dart:convert';
-
-import 'package:domus_buddies/pet/post_info.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ImageServices{
@@ -22,11 +18,11 @@ class ImageServices{
         image = parseFeedImage(response.body);
         return image;
       } else {
-        print('Error fetching image: ${response.statusCode}');
-        print('Error fetching image: ${response.reasonPhrase}');
+        //print('Error fetching image: ${response.statusCode}');
+        //print('Error fetching image: ${response.reasonPhrase}');
       }
     } catch (error) {
-      print('Error fetching image: $error');
+      //print('Error fetching image: $error');
     }
     return null;
   }

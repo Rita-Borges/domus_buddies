@@ -34,8 +34,8 @@ class _ObterRegistoVeterinarioState extends State<ObterRegistoVeterinario> {
       nextAppointmentTime = scheduledTime;
     });
 
-    // TODO: Implement your appointment scheduling logic here
-    print('Scheduled appointment for $scheduledTime');
+
+    //print('Scheduled appointment for $scheduledTime');
   }
 
   @override
@@ -72,13 +72,13 @@ class _ObterRegistoVeterinarioState extends State<ObterRegistoVeterinario> {
           isLoading = false;
         });
       } else {
-        print('Failed to fetch clinical records');
+        //print('Failed to fetch clinical records');
         setState(() {
           isLoading = false;
         });
       }
     } catch (e) {
-      print('Error fetching clinical records: $e');
+      //print('Error fetching clinical records: $e');
       setState(() {
         isLoading = false;
       });
@@ -88,7 +88,7 @@ class _ObterRegistoVeterinarioState extends State<ObterRegistoVeterinario> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: const CustomAppBar(),
       body: GradientBackground(
         child: Padding(
           padding: const EdgeInsets.all(16),

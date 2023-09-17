@@ -55,11 +55,11 @@ Future<void> updateUser(User user, String token) async {
   );
 
   if (response.statusCode == 200) {
-    print('User updated successfully.');
+    //print('User updated successfully.');
   } else {
-    print('Error updating user: ${response.statusCode} ${response.reasonPhrase}');
+    //print('Error updating user: ${response.statusCode} ${response.reasonPhrase}');
     //print('Error updating user: ${response.reasonPhrase} ${response.contentLength}');
-    print('Error updating user: ${String.fromCharCodes(response.bodyBytes)} ${response.reasonPhrase}');
+    //print('Error updating user: ${String.fromCharCodes(response.bodyBytes)} ${response.reasonPhrase}');
     //print('Error updating user: ${response.statusCode} ${response.reasonPhrase}');
 
   }

@@ -19,9 +19,9 @@ Future<void> createUser(User user, String token) async {
   );
 
   if (response.statusCode == 201) {
-    print('User created successfully.');
+    //print('User created successfully.');
   } else {
-    print('Error creating user: ${response.body}');
+    //print('Error creating user: ${response.body}');
   }
 }
 

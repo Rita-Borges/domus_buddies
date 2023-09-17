@@ -11,7 +11,7 @@ class LostPetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: const CustomAppBar(),
         body: Stack(
           children: [
             GradientBackground(
@@ -127,7 +127,6 @@ class LostPetPage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-
           ],
         ),
       ),

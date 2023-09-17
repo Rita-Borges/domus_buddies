@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:domus_buddies/pet/post_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'package:intl/intl.dart';
+
 
 import '../services/image_services.dart';
 
@@ -23,15 +21,15 @@ class AsMinhasPubliccoesService extends ChangeNotifier {
         feeds = parseFeed(response.body);
         for(PostInfo postInfo in feeds){
           postInfo.fileInBytes =  await ImageServices().fetchImage(authToken, postInfo.filename) ?? List.empty();
-          print(postInfo.fileInBytes);
+          //print(postInfo.fileInBytes);
         }
         notifyListeners();
       } else {
-        print('Error fetching feed: ${response.statusCode}');
-        print('Error fetching feed: ${response.reasonPhrase}');
+        //print('Error fetching feed: ${response.statusCode}');
+        //print('Error fetching feed: ${response.reasonPhrase}');
       }
     } catch (error) {
-      print('Error fetching feed: $error');
+      //print('Error fetching feed: $error');
     }
   }
 

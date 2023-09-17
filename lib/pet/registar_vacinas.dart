@@ -1,4 +1,4 @@
-import 'package:domus_buddies/User/user_info.dart';
+import 'package:domus_buddies/pet/pet_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../background/appbar_generic.dart';
@@ -64,9 +64,9 @@ class _RegistoVacinasState extends State<RegistoVacinas> {
     );
 
     if (response.statusCode == 200) {
-      print('Clinic record added successfully.');
+      //print('Clinic record added successfully.');
     } else {
-      print('Error adding clinic record: ${response.statusCode} ${response.reasonPhrase}');
+      //print('Error adding clinic record: ${response.statusCode} ${response.reasonPhrase}');
     }
   }
 
@@ -80,7 +80,7 @@ class _RegistoVacinasState extends State<RegistoVacinas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: const CustomAppBar(),
       body: GradientBackground(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -154,18 +154,11 @@ class _RegistoVacinasState extends State<RegistoVacinas> {
       child: ElevatedButton.icon(
         onPressed: () async {
           final accessTokenProvider =
-          Provider.of<FetchUserData>(context,
-              listen: false);
-          String? accessToken =
-              accessTokenProvider.accessToken;
+          Provider.of<FetchUserData>(context, listen: false);
+          String? accessToken = accessTokenProvider.accessToken;
 
           if (_formKey.currentState!.validate()) {
             String authToken = accessToken ?? ""; // Replace with your authentication token
-
-            String nome = _nameController.text;
-            String descricao = _descricaoController.text;
-            String data = _dataController.text;
-            String veterinario = _doctorNameController.text;
 
             if (_isAnyFieldEmpty()) {
               _showErrorDialog(context, 'Por favor, preencha todos os campos.');
@@ -173,11 +166,10 @@ class _RegistoVacinasState extends State<RegistoVacinas> {
             }
 
             requestPostClinico(authToken);
-
-            print('Nome: $nome');
-            print('Descrição: $descricao');
-            print('Data: $data');
-            print('Veterinário: $veterinario');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyPetsList( )),
+            );
           }
         },
         icon: const Icon(Icons.vaccines_outlined, color: Colors.white),
